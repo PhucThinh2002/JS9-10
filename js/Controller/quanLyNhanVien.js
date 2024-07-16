@@ -5,13 +5,17 @@ let arrNV = [];
 
 document.querySelector('#myModal').onsubmit = function (e) {
     e.preventDefault();
-    console.log('submit');
+    // console.log('submit');
     let nv = new NhanVien();
     let arrInput = document.querySelectorAll('#myModal .form-control');
     for (let input of arrInput) {
         let id = input.id;
         let value = input.value;
         nv[id] = value;
+    }
+    if (arrNV.some(existingNV => existingNV.tknv === nv.tknv)) {//kiểm tra xem tài khoản đã tồn tại hay chưa.
+        alert('Tài khoản đã tồn tại!');
+        return;
     }
     arrNV.push(nv);
     render(arrNV);
@@ -51,6 +55,12 @@ document.querySelector("#btnThemNV").onclick = () => {
         nv[input.id] = input.value;
     }
 
+    // Kiểm tra trùng lặp tài khoản
+    if (arrNV.some(existingNV => existingNV.tknv === nv.tknv)) {
+        alert('Tài khoản đã tồn tại!');
+        return;
+    }
+
     // Validate tài khoản
     valid &= requiredValidate(nv.tknv, ".required_TKNV", "Tài khoản") & lengthValidate(nv.tknv, ".number_TKNV", "Tài khoản");
     // Validate tên nhân viên
@@ -72,7 +82,7 @@ document.querySelector("#btnThemNV").onclick = () => {
     nv.loaiNhanVien = xepLoaiNhanVien(nv);
 
     arrNV.push(nv);
-    console.log(arrNV);
+    // console.log(arrNV);
     render(arrNV);
     saveLocalStorage();
     $('#myModal').modal('hide');
@@ -106,6 +116,7 @@ window.chinhSua = function(tknv) {
             }
         }
         $('#myModal').modal('show');
+        document.querySelector("#btnThemNV").disabled = true;
     }
 }
 
@@ -144,6 +155,7 @@ document.querySelector("#btnCapNhat").onclick = function () {
         saveLocalStorage();
 
         $('#myModal').modal('hide');
+        document.querySelector("#btnThemNV").disabled = false;//Disable button "Thêm" khi thực hiện chức năng cập nhật
     }
 }
 
@@ -187,4 +199,13 @@ const loadLocalStorage = () => {
     }
 }
 loadLocalStorage();
+
+//xóa hết data cũ ở trong form
+$('#myModal').on('shown.bs.modal', function (e) {
+    let inputs = document.querySelectorAll("#myModal .form-control");
+    for (let input of inputs) {
+        input.value = "";
+    }
+    document.querySelector("#btnThemNV").disabled = false;
+});
 

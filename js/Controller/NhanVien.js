@@ -14,7 +14,7 @@ export class NhanVien {
 export const tinhTongLuong = (nv) => {
   let tongLuong = 0;
   switch (nv.chucvu) {
-    case "Giám đốc":
+    case "Sếp":
       tongLuong = nv.luongCB * 3;
       break;
     case "Trưởng phòng":
